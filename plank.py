@@ -5,63 +5,85 @@ import click
 __version__ = '0.0.1'
 
 
+class NoisySet(set):
+    def add(self, x):
+        if x in self:
+            return False
+        super(NoisySet, self).add(x)
+        return True
+
+
+class Task(object):
+    def __init__(self, func):
+        self.func = func
+
+        self.has_been_run = False
+        self.pre_req_tasks = []
+
+    @classmethod
+    def make(cls, func_or_task):
+        if isinstance(func_or_task, cls):
+            return func_or_task
+        else:
+            return Task(func_or_task)
+
+    def has_circular_dependency(self, visited_tasks=None):
+        visited_tasks = visited_tasks or NoisySet([self])
+        for pre_req_task in self.pre_req_tasks:
+            if not visited_tasks.add(pre_req_task) or pre_req_task.has_circular_dependency(visited_tasks):
+                return True
+        return False
+
+    def run(self):
+        if self.has_been_run:
+            return
+
+        for pre_req_task in self.pre_req_tasks:
+            pre_req_task.run()
+
+        self.has_been_run = True
+        return self.func()
+
+
 def task(task_func):
-    setup_task(task_func)
-    return task_func
+    return Task.make(task_func)
 
 
 class depends(object):
-    def __init__(self, *tasks):
-        self.tasks = tasks
+    def __init__(self, *pre_req_tasks):
+        self.pre_req_tasks = pre_req_tasks
 
     def __call__(self, task_func):
-        setup_task(task_func)
-        for task in self.tasks:
-            if task not in task_func._plank_depends:
-                task_func._plank_depends.append(task)
-        return task_func
+        task = Task.make(task_func)
+        for pre_req_task in self.pre_req_tasks:
+            if pre_req_task not in task.pre_req_tasks:
+                task.pre_req_tasks.append(pre_req_task)
+        return task
 
 
-def has_circular_dependency(task_func, task_maps, visited_funcs=None):
-    if not visited_funcs:
-        visited_funcs = [task_func]
-    for pre_req_task_func in [task_maps[task_name] for task_name in task_func._plank_depends]:
-        if pre_req_task_func in visited_funcs:
-            return True
-        visited_funcs.append(pre_req_task_func)
-        if has_circular_dependency(pre_req_task_func, task_maps, visited_funcs):
-            return True
-    return False
+def get_tasks():
+    tasks_map = {}
+    planks = importlib.import_module('planks')
+    for name, member in inspect.getmembers(planks):
+        if isinstance(member, Task):
+            tasks_map[name] = member
+    return tasks_map
 
 
-def setup_task(task_func):
-    if not hasattr(task_func, '_plank'):
-        task_func._plank = True
-        task_func._plank_has_been_run = False
-        task_func._plank_depends = []
-
-
-def run_task(task_func, tasks_map):
-    if has_circular_dependency(task_func, tasks_map):
-        raise Exception('Circular dependency detected')
-    for pre_req_task_name in task_func._plank_depends:
-        pre_req_task_func = tasks_map.get(pre_req_task_name)
-        if not pre_req_task_func._plank_has_been_run:
-            run_task(pre_req_task_func, tasks_map)
-    task_func()
-    task_func._plank_has_been_run = True
+def materialise_pre_req_tasks(tasks):
+    for task in tasks.values():
+        task.pre_req_tasks = [tasks[name] for name in task.pre_req_tasks]
 
 
 @click.command()
 @click.argument("task")
 def plank_runner(task):
-    tasks_map = {}
-    planks = importlib.import_module('planks')
-    for name, member in inspect.getmembers(planks):
-        if getattr(member, '_plank', False):
-            tasks_map[name] = member
-    task_func = tasks_map.get(task)
-    run_task(task_func, tasks_map)
+    tasks = get_tasks()
+    materialise_pre_req_tasks(tasks)
+    task = tasks.get(task)
+    if task.has_circular_dependency():
+        raise Exception("Circular dependency detected")
+    task.run()
 
 
 if __name__ == '__main__':
