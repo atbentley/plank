@@ -27,6 +27,10 @@ setup(
     description="A simple task and build runner that doesn't get in the way.",
     long_description=read('README.rst'),
     py_modules=['plank'],
+    entry_points='''
+    [console_scripts]
+    plank=plank:plank_runner
+    ''',
     include_package_data=True,
     zip_safe=False,
     platforms='any',
@@ -39,5 +43,3 @@ setup(
         'Programming Language :: Python :: 3.5'
     ]
 )
-
-
