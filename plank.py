@@ -1,5 +1,8 @@
 import inspect
 import importlib
+import os
+import sys
+
 import click
 
 __version__ = '0.0.1'
@@ -62,8 +65,10 @@ class depends(object):
 
 
 def get_tasks():
-    tasks_map = {}
+    sys.path.insert(0, os.getcwd())
     planks = importlib.import_module('planks')
+    sys.path.pop(0)
+    tasks_map = {}
     for name, member in inspect.getmembers(planks):
         if isinstance(member, Task):
             tasks_map[name] = member
