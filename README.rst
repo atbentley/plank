@@ -6,6 +6,9 @@ Plank is a simple and unopinionated python task runner. Plank doesn't manipulate
 .. image:: https://travis-ci.org/atbentley/plank.svg?branch=master
   :target:  https://travis-ci.org/atbentley/plank
 
+.. image:: https://coveralls.io/repos/github/atbentley/plank/badge.svg?branch=master
+  :target: https://coveralls.io/github/atbentley/plank?branch=master
+
 
 Usage
 -----
