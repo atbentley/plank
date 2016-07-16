@@ -8,6 +8,14 @@ import click
 __version__ = '0.0.1'
 
 
+class PlankError(Exception):
+    pass
+
+
+class CircularDependencyError(PlankError):
+    pass
+
+
 class NoisySet(set):
     def add(self, x):
         if x in self:
@@ -65,9 +73,7 @@ class depends(object):
 
 
 def get_tasks():
-    sys.path.insert(0, os.getcwd())
     planks = importlib.import_module('planks')
-    sys.path.pop(0)
     tasks_map = {}
     for name, member in inspect.getmembers(planks):
         if isinstance(member, Task):
@@ -83,12 +89,14 @@ def materialise_pre_req_tasks(tasks):
 @click.command()
 @click.argument("task")
 def plank_runner(task):
+    sys.path.insert(0, os.getcwd())
     tasks = get_tasks()
     materialise_pre_req_tasks(tasks)
     task = tasks.get(task)
     if task.has_circular_dependency():
-        raise Exception("Circular dependency detected")
+        raise CircularDependencyError("Circular dependency detected")
     task.run()
+    sys.path.pop(0)
 
 
 if __name__ == '__main__':

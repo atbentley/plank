@@ -24,6 +24,12 @@ Examples
       assert pytest.main(['tests/unit']) == 0
 
 
+Tests
+-----
+
+Tests are written using pytest and can be run using plank, ``plank unit_tests``.
+
+
 License
 -------
 
