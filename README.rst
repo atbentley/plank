@@ -3,6 +3,9 @@ Plank
 
 Plank is a simple and unopinionated python task runner. Plank doesn't manipulate Python or your environment to run the tasks. Plank doesn't provide any default or template tasks.
 
+.. image:: https://travis-ci.org/atbentley/plank.svg?branch=master
+  :target:  https://travis-ci.org/atbentley/plank
+
 
 Usage
 -----
