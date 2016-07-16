@@ -27,7 +27,7 @@ Examples
 Tests
 -----
 
-Tests are written using pytest and can be run using plank, ``plank unit_tests``.
+Tests are written using pytest and can be run using plank, ``plank tests``.
 
 
 License
