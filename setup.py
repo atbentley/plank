@@ -10,7 +10,7 @@ def read(path):
 
 
 _version_re = re.compile(r'\s*__version__\s*=\s*\'(.*)\'\s*')
-version = _version_re.findall(read('plank.py'))[0]
+version = _version_re.findall(read(os.path.join('plank', '__init__.py')))[0]
 
 
 install_requires = read('requirements.txt').split('\n')
@@ -26,8 +26,8 @@ setup(
     author_email='andrew.t.bentley@gmail.com',
     description="A simple task and build runner that doesn't get in the way.",
     long_description=read('README.rst'),
-    py_modules=['plank'],
-    entry_points={'console_scripts': ['plank = plank:plank_runner']},
+    packages=['plank'],
+    entry_points={'console_scripts': ['plank = plank.cli:main']},
     include_package_data=True,
     zip_safe=False,
     platforms='any',
