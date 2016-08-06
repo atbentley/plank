@@ -5,8 +5,10 @@ from .task import Task
 
 
 class Inspector(object):
-    def __init__(self, planks_module_name='planks'):
-        self.planks_module_name = planks_module_name
+    DEFAULT_PLANKS_MODULE_NAME = 'planks'
+
+    def __init__(self, planks_module_name=None):
+        self.planks_module_name = planks_module_name or self.DEFAULT_PLANKS_MODULE_NAME
         self.planks_module = None
         self.tasks = None
 
@@ -26,7 +28,7 @@ class Inspector(object):
         self.materialise_tasks()
 
     def import_planks_module(self):
-        self.planks_module = importlib.import_module('planks')
+        self.planks_module = importlib.import_module(self.planks_module_name)
 
     def materialise_tasks(self):
         for task in self.tasks.values():
