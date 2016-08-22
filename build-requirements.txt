@@ -1,4 +1,3 @@
 pytest >= 2.9, < 2.10
 pytest-cov >= 2.3, < 2.4
 fluentmock >= 0.3, < 0.4
-plank >= 0.0.2, < 0.1

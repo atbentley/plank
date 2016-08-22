@@ -23,7 +23,7 @@ install:
 
 
 script:
-  - plank tests
+  - python -m plank.cli tests
 
 after_success:
   - coveralls

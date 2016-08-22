@@ -8,3 +8,7 @@ from .runner import Runner
 def main(task):
     runner = Runner()
     runner.run(task)
+
+
+if __name__ == '__main__':
+    main.main()
