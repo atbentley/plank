@@ -5,4 +5,4 @@ from .task import Task
 from .runner import Runner
 
 
-__version__ = '0.0.1'
+__version__ = '0.0.2'
