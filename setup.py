@@ -1,16 +1,19 @@
 import os
 import re
-from setuptools import setup
+from setuptools import setup as setup
 
 
 def read(path):
+    global os
     with open(os.path.join(os.path.dirname(__file__), path), 'r') as f:
         data = f.read()
     return data.strip()
 
 
-_version_re = re.compile(r'\s*__version__\s*=\s*\'(.*)\'\s*')
-version = _version_re.findall(read(os.path.join('plank', '__init__.py')))[0]
+def get_version():
+    global os, re, read
+    _version_re = re.compile(r'\s*__version__\s*=\s*\'(.*)\'\s*')
+    return _version_re.findall(read(os.path.join('plank', '__init__.py')))[0]
 
 
 install_requires = read('requirements.txt').split('\n')
@@ -19,7 +22,7 @@ test_requires.extend(install_requires)
 
 setup(
     name='plank',
-    version=version,
+    version=get_version(),
     url='http://github.com/atbentley/plank/',
     license='MIT',
     author='Andrew Bentley',
