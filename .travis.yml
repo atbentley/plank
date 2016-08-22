@@ -23,7 +23,7 @@ install:
 
 
 script:
-  - py.test --cov plank tests
+  - plank tests
 
 after_success:
   - coveralls
