@@ -1,5 +1,6 @@
 import importlib
 import inspect
+from collections import OrderedDict
 
 from .task import Task
 
@@ -21,7 +22,7 @@ class Inspector(object):
         if not self.planks_module:
             self.import_planks_module()
 
-        self.tasks = {}
+        self.tasks = OrderedDict()
         for name, member in inspect.getmembers(self.planks_module):
             if isinstance(member, Task):
                 self.tasks[name] = member
