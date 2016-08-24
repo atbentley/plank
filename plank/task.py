@@ -1,3 +1,12 @@
+import os
+
+
+def print_header(text):
+    if os.name != 'nt':
+        text = '\033[1m\033[97m{0}\033[0m'.format(text)
+    print text
+
+
 class NoisySet(set):
     def add(self, x):
         if x in self:
@@ -11,6 +20,7 @@ class Task(object):
         self.func = func
         self.has_been_run = False
         self.pre_req_tasks = []
+        self.name = getattr(self.func, '__name__', '')
 
     @classmethod
     def make(cls, func_or_task):
@@ -29,6 +39,8 @@ class Task(object):
     def run(self):
         if self.has_been_run:
             return
+
+        print_header('Running task: {0}'.format(self.name))
 
         for pre_req_task in self.pre_req_tasks:
             pre_req_task.run()
