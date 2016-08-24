@@ -1,11 +1,14 @@
 import os
+import subprocess
+
 from plank import task, depends
 
 
 @task
 def unit_tests():
-    import pytest
-    exit_status = pytest.main(['--cov', 'plank', '--cov-report=', 'tests/unit'])
+    # Run tests in subprocess since we've imported some of the code we are testing
+    # and coverage will not accurately reflect the lines we test
+    exit_status = subprocess.check_call(['py.test', '--cov', 'plank', '--cov-report=', 'tests/unit'])
     os.rename('.coverage', '.unit.coverage')
     if exit_status != 0:
         raise Exception('Unit tests failed')
@@ -13,8 +16,9 @@ def unit_tests():
 
 @task
 def integration_tests():
-    import pytest
-    exit_status = pytest.main(['--cov', 'plank', '--cov-report=', 'tests/integration'])
+    # Run tests in subprocess since we've imported some of the code we are testing
+    # and coverage will not accurately reflect the lines we test
+    exit_status = subprocess.check_call(['py.test', '--cov', 'plank', '--cov-report=', 'tests/integration'])
     os.rename('.coverage', '.integration.coverage')
     if exit_status != 0:
         raise Exception('Integration tests failed')
