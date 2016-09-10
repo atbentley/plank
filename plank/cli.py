@@ -8,12 +8,14 @@ from .runner import Runner
 
 
 def list_available_tasks(ctx, param, value):
+    sys.path.insert(0, os.getcwd())
     if not value or ctx.resilient_parsing:
         return
     tasks = Inspector().get_tasks()
     print 'Available tasks:'
     for task in tasks.values():
         print '\t{0}'.format(task.name)
+    sys.path.pop(0)
     ctx.exit()
 
 
