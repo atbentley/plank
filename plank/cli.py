@@ -12,9 +12,9 @@ def list_available_tasks(ctx, param, value):
     if not value or ctx.resilient_parsing:
         return
     tasks = Inspector().get_tasks()
-    print 'Available tasks:'
+    print('Available tasks:')
     for task in tasks.values():
-        print '\t{0}'.format(task.name)
+        print('\t{0}'.format(task.name))
     sys.path.pop(0)
     ctx.exit()
 

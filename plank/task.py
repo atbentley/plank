@@ -4,7 +4,7 @@ import os
 def print_header(text):
     if os.name != 'nt':
         text = '\033[1m\033[97m{0}\033[0m'.format(text)
-    print text
+    print(text)
 
 
 class NoisySet(set):
