@@ -1,17 +1,37 @@
 from .task import Task
 
 
-def task(task_func):
-    return Task.make(task_func)
+__all__ = ['task', 'depends', 'description']
 
 
-class depends(object):
-    def __init__(self, *pre_req_tasks):
-        self.pre_req_tasks = pre_req_tasks
+def parameterised(dec):
+    def layer(*args, **kwargs):
+        def repl(f):
+            return dec(f, *args, **kwargs)
+        return repl
+    return layer
 
-    def __call__(self, task_func):
-        task = Task.make(task_func)
-        for pre_req_task in self.pre_req_tasks:
-            if pre_req_task not in task.pre_req_tasks:
-                task.pre_req_tasks.append(pre_req_task)
-        return task
+
+def task(task_func=None):
+    if task_func:
+        return Task.make(task_func)
+    else:
+        def wrapped(task_func):
+            return Task.make(task_func)
+        return wrapped
+
+
+@parameterised
+def depends(task_func, *pre_req_tasks):
+    task = Task.make(task_func)
+    for pre_req_task in pre_req_tasks:
+        if pre_req_task not in task.pre_req_tasks:
+            task.pre_req_tasks.append(pre_req_task)
+    return task
+
+
+@parameterised
+def description(task_func, description):
+    task = Task.make(task_func)
+    task.description = description
+    return task

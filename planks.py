@@ -31,7 +31,7 @@ def coverage():
     cov.load()
     cov.combine(['.unit.coverage', '.integration.coverage'])
     cov.save()
-    cov.report()
+    cov.report(show_missing=True)
 
 
 @task

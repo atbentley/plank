@@ -1,4 +1,4 @@
-from .decorators import task, depends
+from .decorators import task, depends, description
 from .errors import PlankError, TaskNotFound, CircularDependency
 from .inspector import Inspector
 from .task import Task

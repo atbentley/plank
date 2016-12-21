@@ -21,6 +21,7 @@ class Task(object):
         self.has_been_run = False
         self.pre_req_tasks = []
         self.name = getattr(self.func, '__name__', '')
+        self.description = None
 
     @classmethod
     def make(cls, func_or_task):
